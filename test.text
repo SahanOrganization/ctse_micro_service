@@ -1,0 +1,109 @@
+IAM role change 
+
+GitHubActionsECS
+remove AmazonECSTaskExecutionRolePolicy 
+- ok
+
+remove AdministratorAccess
+- error
+Warning: Your docker password is not masked. See https://github.com/aws-actions/amazon-ecr-login#docker-credentials for more information.
+Error: User: arn:aws:sts::***:assumed-role/GitHubActionsECS/Github is not authorized to perform: ecr:GetAuthorizationToken on resource: * because no identity-based policy allows the ecr:GetAuthorizationToken action
+
+remove AmazonECS_FullAccess
+- ok 
+
+-----------------------------------
+
+Restricting access to GitHubActionsECS role
+
+Creating new policy "GitHubActionsECSLimitedAccess"
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecs:UpdateService",
+                "ecs:RegisterTaskDefinition",
+                "ecs:DeregisterTaskDefinition",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "iam:PassRole"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
+Error 
+
+denied: User: arn:aws:sts::***:assumed-role/GitHubActionsECS/Github is not authorized to perform: ecr:InitiateLayerUpload on resource: arn:aws:ecr:us-east-1:***:repository/ctse_micro_service because no identity-based policy allows the ecr:InitiateLayerUpload action
+Error: Process completed with exit code 1.
+
+
+Fix
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecs:UpdateService",
+                "ecs:RegisterTaskDefinition",
+                "ecs:DeregisterTaskDefinition",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload",
+                "ecr:PutImage",
+                "iam:PassRole"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
+Error: User: arn:aws:sts::***:assumed-role/GitHubActionsECS/Github is not authorized to perform: ecs:DescribeServices on resource: arn:aws:ecs:us-east-1:***:service/ctse_micro_service/ctse_micro_service because no identity-based policy allows the ecs:DescribeServices action
+
+Fix 
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ecs:UpdateService",
+                "ecs:RegisterTaskDefinition",
+                "ecs:DeregisterTaskDefinition",
+                "ecs:DescribeServices",  // Add this line
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "ecr:GetAuthorizationToken",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+                "ecr:InitiateLayerUpload",
+                "ecr:UploadLayerPart",
+                "ecr:CompleteLayerUpload",
+                "ecr:PutImage",
+                "iam:PassRole"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+
+
