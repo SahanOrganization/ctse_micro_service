@@ -19,4 +19,4 @@ jobs:
                   args: >
                       -Dsonar.organization=sahanorganization
                       -Dsonar.projectKey=ctse_micro_service
-                      -ctse_micro_service.node.coverage.reportPaths=coverage.xml
+                      -Dsonar.javascript.lcov.reportPaths=coverage.xml
